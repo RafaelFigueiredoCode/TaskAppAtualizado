@@ -1,9 +1,22 @@
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useTasks } from '../contexts/TaskContext';
 
-export default function TaskCard({ title, completed, onPress, onToggle, isLocal, onDelete }) {
-  const { theme } = useTasks();
 
+export default function TaskCard({ title, completed, priority, onPress, onToggle, isLocal, onDelete }) {
+
+  const { theme } = useTasks();
+let color
+
+if (priority === 'alta'){
+  color = 'red'
+}
+else if (priority === 'media'){
+  color = 'yellow'
+}
+else if(priority === 'baixa'){
+  color = 'green'
+}
+  
   return (
     <TouchableOpacity
       style={[styles.card, completed && styles.completedCard, theme === 'dark' && styles.darkCard]}
@@ -15,7 +28,12 @@ export default function TaskCard({ title, completed, onPress, onToggle, isLocal,
             {completed ? '✓' : '⬜'}
           </Text>
         </TouchableOpacity>
-        <Text style={[styles.title, theme === 'dark' && styles.darkText]}>{title}</Text>
+        <View style={styles.textContainer}>
+        <Text style={[styles.title, theme === "dark" && styles.darkText]}>{title}</Text>
+        <Text style={[{ color: color }, theme === "dark" && styles.darkText]}>
+        Prioridade: {priority || "Não definida"}
+        </Text>
+        </View>
         {isLocal && (
           <TouchableOpacity onPress={onDelete}>
             <Text style={styles.deleteButton}>🗑️</Text>
@@ -67,4 +85,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#dc3545',
   },
+  textContainer: {
+    flex: 1
+  },
+  title: {
+    fontSize: 16,
+    color: '#333'
+  },
+  priority: {
+    fontSize: 16,
+    color: '#333'
+  }
 });

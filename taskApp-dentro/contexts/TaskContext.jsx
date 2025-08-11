@@ -7,7 +7,7 @@ export function TaskProvider({ children }) {
   const [localTasks, setLocalTasks] = useState([]);
   const [theme, setTheme] = useState('light');
 
-  // Carregar tarefas do AsyncStorage ao iniciar
+  
   useEffect(() => {
     const loadTasks = async () => {
       try {
@@ -18,7 +18,8 @@ export function TaskProvider({ children }) {
             setLocalTasks(parsedTasks);
           } else {
             console.warn('Dados inválidos, inicializando com array vazio');
-            setLocalTasks([]);
+            setLocalTasks([])
+            await AsyncStorage.setItem('@TaskApp: tasks', JSON.stringfy([]))
           }
         }
       } catch (err) {
@@ -28,7 +29,6 @@ export function TaskProvider({ children }) {
     loadTasks();
   }, []);
 
-  // Salvar tarefas no AsyncStorage quando localTasks mudar
   useEffect(() => {
     const saveTasks = async () => {
       try {
@@ -40,10 +40,16 @@ export function TaskProvider({ children }) {
     saveTasks();
   }, [localTasks]);
 
-  const addTask = ({ title, description, id }) => {
+  const addTask = ({ title, description, priority, id }) => {
     setLocalTasks((prev) => [
       ...prev,
-      { id: id || `local-${Date.now()}`, title, description: description || '', completed: false },
+      {
+        id: id || `local-${Date.now()}`,
+        title,
+        description,
+        priority,
+        completed: false,
+      },
     ]);
   };
 

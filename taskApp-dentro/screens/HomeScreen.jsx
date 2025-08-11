@@ -43,6 +43,7 @@ export default function HomeScreen({ navigation }) {
       <TaskCard
       title={item.title}
       completed={item.completed}
+      priority= {item.priority}
       onPress={isLocal ? () => navigation.navigate('Details', { task: item }) : null}
       onToggle={isLocal ? () => toggleTaskCompletion(item.id) : null}
       isLocal={isLocal}

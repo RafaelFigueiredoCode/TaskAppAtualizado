@@ -80,7 +80,7 @@ function DrawerNavigator() {
     }}
     >
     <Drawer.Screen
-    name= 'tarefas'
+    name= 'Tarefas'
     component= {TabNavigator}
     options ={{
       drawerIcon: ({color, size}) => (

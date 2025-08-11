@@ -1,17 +1,23 @@
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-
+import { useTasks } from '../contexts/TaskContext'
   export default function DetailsScreen({ navigation, route }) {
     const { task } = route.params;
+    const { theme } = useTasks();
 
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Detalhes da Tarefa</Text>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{task.title}</Text>
-          <Text style={styles.cardStatus}>
+      <View style={[styles.container, theme === 'dark' && styles.darkContainer]}>
+          <Text style={[styles.detail, theme === 'dark' && styles.darkText]}>
+            {task.title}
+          </Text>
+          <Text style={[styles.detail, theme === 'dark' && styles.darkText]}>
+            Descrição: {task.description || 'Nenhuma Descrição'}
+          </Text>
+          <Text style={[styles.detail, theme === 'dark' && styles.darkText]}>
+            Prioridade: {task.priority || 'Não Definida'}
+          </Text>
+          <Text style={[styles.detail, theme === 'dark' && styles.darkText]}>
             Status: {task.completed ? 'Concluída' : 'Pendente'}
           </Text>
-        </View>
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.goBack()}
@@ -30,36 +36,22 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
       justifyContent: 'center',
       padding: 20,
     },
+    darkContainer: {
+     backgroundColor: '#333'
+    },
     title: {
       fontSize: 24,
       fontWeight: 'bold',
       marginBottom: 20,
       color: '#333',
     },
-    card: {
-      backgroundColor: '#fff',
-      padding: 20,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#ddd',
-      marginBottom: 20,
-      width: '100%',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 5,
-      elevation: 3,
-    },
-    cardTitle: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: '#333',
-      marginBottom: 10,
-    },
-    cardStatus: {
+    detail: {
       fontSize: 16,
-      color: '#666',
+      color: '#333',
+      marginBottom: 10
+    },
+    darkText: {
+      color: '#fff'
     },
     button: {
       backgroundColor: '#dc3545',
