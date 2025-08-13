@@ -3,6 +3,8 @@ import { useState } from 'react';
 import CustomButton from '../components/CustomButton';
 import CustomModal from '../components/CustomModal';
 import { useTasks } from '../contexts/TaskContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { increment, decrement, reset } from '../contexts/counterSlice';
 
 export default function SettingsScreen() {
   const { toggleTheme, theme, clearTasks, exportTasks, restoreTasks } = useTasks();
@@ -43,6 +45,8 @@ export default function SettingsScreen() {
       alert(err.message);
     }
   }
+  const counter = useSelector((state) => state.counetr.value);
+  const dispatch = useDispatch();
   
   return (
     <View style={[styles.container, theme === 'dark' && styles.darkContainer]}>
@@ -52,6 +56,24 @@ export default function SettingsScreen() {
       {successMessage ? (
         <Text style={styles.successText}>{successMessage}</Text>
       ) : null}
+      <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
+        contador: {counter}
+      </Text>
+      <CustomButton
+      title='Incrementar'
+      onPress={() => dispatch(increment())}
+      color="#007bff"
+      />
+      <CustomButton
+      title='Decrementar'
+      onPress={() => dispatch(decrement())}
+      color="#007bff"
+      />
+      <CustomButton
+      title='Resetar Conatdor'
+      onPress={() => dispatch(reset())}
+      color="#007bff"
+      />
 
       <CustomButton
         title={`Mudar para Tema (${theme === 'light' ? 'Escuro' : 'Claro'})`}
