@@ -5,6 +5,8 @@ import TaskCard from '../components/TaskCard';
 import CustomButton from '../components/CustomButton';
 import CustomModal from '../components/CustomModal';
 import { useTasks } from '../contexts/TaskContext';
+import { useSelector, useDispatch } from 'react-redux';
+import {toggleTaskCompletion, deleteTask, loadTasks}  from '../features/tasksSlice'
 
 export default function HomeScreen({ navigation }) {
   const { localTasks, toggleTaskCompletion, deleteTask, getCompletedCount, theme} = useTasks();

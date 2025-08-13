@@ -1,8 +1,10 @@
 import { StyleSheet, View, Text } from 'react-native';
 import { useTasks } from '../contexts/TaskContext';
+import { useSelector } from 'react-redux'
 
 export default function ProfileScreen() {
-  const { theme } = useTasks();
+  const { theme, localTasks } = useSelector((state) => state.tasks);
+  const getCompletedCount = () => localTasks.filter((task) => task.completed).length;
 
   return (
     <View style={[styles.container, theme === 'dark' && styles.darkContainer]}>

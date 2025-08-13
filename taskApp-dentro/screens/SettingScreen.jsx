@@ -4,16 +4,17 @@ import CustomButton from '../components/CustomButton';
 import CustomModal from '../components/CustomModal';
 import { useTasks } from '../contexts/TaskContext';
 import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement, reset } from '../contexts/counterSlice';
+import { increment, decrement, reset } from '../features/counterSlice';
+import {toggleTheme, clearTasks, exportTasks, restoreTasks, saveTasks}  from '../features/tasksSlice'
 
 export default function SettingsScreen() {
-  const { toggleTheme, theme, clearTasks, exportTasks, restoreTasks } = useTasks();
   const [modalVisible, setModalVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
   const handleClearTasks = async () => {
     try {
-      await clearTasks();
+      await dispatch (clearTasks());
+      await dispatch (saveTasks([]))
       setModalVisible(false);
       setSuccessMessage('Tarefas limpas com sucesso!');
       setTimeout(() => setSuccessMessage(''), 2000);
@@ -26,8 +27,8 @@ export default function SettingsScreen() {
 
   const handleExport = async () => {
     try {
-      const message = await exportTasks();
-      setSuccessMessage(message);
+      const result = await dispatch  (exportTasks()).unwrap();
+      setSuccessMessage(result);
       setTimeout(() => setSuccessMessage(''), 2000);
     } catch (err) {
       setSuccessMessage('');
@@ -37,17 +38,15 @@ export default function SettingsScreen() {
 
   const handleRestore = async () => {
     try {
-      const message = await restoreTasks();
-      setSuccessMessage(message);
+      const result = await dispatch (restoreTasks()).unwrap();
+      setSuccessMessage('backup restaurado com sucesso!');
       setTimeout(() => setSuccessMessage(''), 2000);
     } catch (err) {
       setSuccessMessage('');
       alert(err.message);
     }
-  }
-  const counter = useSelector((state) => state.counetr.value);
-  const dispatch = useDispatch();
-  
+  };
+
   return (
     <View style={[styles.container, theme === 'dark' && styles.darkContainer]}>
       <Text style={[styles.title, theme === 'dark' && styles.darkText]}>
@@ -77,28 +76,28 @@ export default function SettingsScreen() {
 
       <CustomButton
         title={`Mudar para Tema (${theme === 'light' ? 'Escuro' : 'Claro'})`}
-        onPress={toggleTheme}
-        color="#000"
+        onPress={() => dispatch(toggleTheme())}
+        color="#007bff"
       />
       <CustomButton
         title="Limpar Todas as Tarefas"
-        onPress={() => setModalVisible(true)}
+        onPress={() => dispatch(setModalVisible(true))}
         color="#dc3545"
       />
       <CustomButton
         title="Exportar Tarefas"
-        onPress={handleExport}
+        onPress={() => dispatch(handleExport())}
         color="#007bff"
       />
       <CustomButton
         title="Restaurar Backup"
-        onPress={handleRestore}
+        onPress={() => dispatch(handleRestore())}
         color="#28a745"
       />
 
       <CustomModal
         visible={modalVisible}
-        onClose={() => setModalVisible(false)}
+        onClose={() => dispatch(setModalVisible(false))}
         title="Limpar Tarefas"
         message="Deseja excluir todas as tarefas locais?"
         onConfirm={handleClearTasks}

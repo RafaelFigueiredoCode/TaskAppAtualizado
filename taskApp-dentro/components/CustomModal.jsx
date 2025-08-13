@@ -1,5 +1,6 @@
 import { StyleSheet, Modal, View, Text } from 'react-native';
 import CustomButton from './CustomButton';
+import { useSelector } from 'react-redux';
 
 export default function CustomModal({
   visible,
@@ -9,7 +10,9 @@ export default function CustomModal({
   confirmText = 'Confirmar',
   cancelText = 'Cancelar',
   onConfirm,
-}) {
+}) 
+{
+const { theme } = useSelector((state) => state.tasks)
   return (
     <Modal
       transparent

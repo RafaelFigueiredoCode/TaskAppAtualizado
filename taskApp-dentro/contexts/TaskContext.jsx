@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createSlice, createAsyncThunk}
 
 const TaskContext = createContext();
 
@@ -8,7 +7,6 @@ export function TaskProvider({ children }) {
   const [localTasks, setLocalTasks] = useState([]);
   const [theme, setTheme] = useState('light');
 
-  
   useEffect(() => {
     const loadTasks = async () => {
       try {

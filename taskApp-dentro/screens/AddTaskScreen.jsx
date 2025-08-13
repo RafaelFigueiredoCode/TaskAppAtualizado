@@ -7,6 +7,8 @@ import { useTasks } from '../contexts/TaskContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Picker } from '@react-native-picker/picker';
+import { useSelector, useDispatch } from 'react-redux';
+import { addTask } from '../features/taskSlice';
 
 const validationSchema = Yup.object().shape({
   title: Yup.string()
@@ -18,7 +20,8 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function AddTaskScreen({ navigation }) {
-  const { addTask, theme } = useTasks();
+  const { theme } = useSelector((state) => state.tasks);
+  const dispatch = useDispatch();
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -34,11 +37,11 @@ export default function AddTaskScreen({ navigation }) {
         completed: false,
       });
 
-      addTask({
+      dispatch (addTask({
         title: values.title,
         description: values.description,
         priority: values.priority,
-      });
+      }));
 
       setSuccessMessage('Tarefa adicionada com sucesso!');
       setTimeout(() => {

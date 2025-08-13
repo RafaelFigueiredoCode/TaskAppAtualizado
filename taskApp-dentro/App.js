@@ -2,15 +2,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-
 import HomeScreen from './screens/HomeScreen';
 import AddTaskScreen from './screens/AddTaskScreen';
 import DetailsScreen from './screens/DetailsScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import SettingsScreen from './screens/SettingScreen';
-import { TaskProvider } from './contexts/TaskContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Provider } from 'react-redux'
+import { store } from 'store.jsx'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -118,5 +117,4 @@ export default function App() {
     </NavigationContainer>
   </Provider>
  )
-
 }
