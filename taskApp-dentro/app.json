@@ -24,6 +24,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "permissions": [
+      {
+        "name": "location",
+        "description": "Permite o acesso da localização atual."
+      }
+    ]
+      
+    
   }
 }

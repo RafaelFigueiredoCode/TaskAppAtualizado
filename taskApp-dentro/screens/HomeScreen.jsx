@@ -1,25 +1,26 @@
 import { StyleSheet, View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleTaskCompletion, deleteTask, loadTasks } from '../contexts/tasksSlice';
 import axios from 'axios';
 import TaskCard from '../components/TaskCard';
 import CustomButton from '../components/CustomButton';
 import CustomModal from '../components/CustomModal';
-import { useTasks } from '../contexts/TaskContext';
-import { useSelector, useDispatch } from 'react-redux';
-import {toggleTaskCompletion, deleteTask, loadTasks}  from '../features/tasksSlice'
 
 export default function HomeScreen({ navigation }) {
-  const { localTasks, toggleTaskCompletion, deleteTask, getCompletedCount, theme} = useTasks();
+  const { localTasks, theme } = useSelector((state) => state.tasks);
+  const dispatch = useDispatch();
   const [apiTasks, setApiTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all');
   const [modalVisible, setModalVisible] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
-  const [clearModalVisible, setClearModalVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const getCompletedCount = () => localTasks.filter((task) => task.completed).length;
 
   useEffect(() => {
+    dispatch(loadTasks());
     setIsLoading(true);
     axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5')
       .then(response => {
@@ -30,7 +31,7 @@ export default function HomeScreen({ navigation }) {
         setError('Erro ao carregar tarefas da API');
         setIsLoading(false);
       });
-  }, []);
+  }, [dispatch]);
 
   const allTasks = [...apiTasks, ...localTasks];
   const filteredTasks = allTasks.filter((task) => {
@@ -38,14 +39,14 @@ export default function HomeScreen({ navigation }) {
     if (filter === 'completed') return task.completed;
     return true;
   });
-  
+
   const renderItem = ({ item }) => {
     const isLocal = typeof item.id === 'string'
     return(
       <TaskCard
       title={item.title}
       completed={item.completed}
-      priority= {item.priority}
+      priority={item.priority}
       onPress={isLocal ? () => navigation.navigate('Details', { task: item }) : null}
       onToggle={isLocal ? () => toggleTaskCompletion(item.id) : null}
       isLocal={isLocal}
@@ -125,14 +126,13 @@ export default function HomeScreen({ navigation }) {
         onPress={() => navigation.navigate('AddTask')}
         color="#28a745"
       />
-
       <CustomModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         title="Confirmar Exclusão"
         message="Deseja realmente excluir esta tarefa?"
         onConfirm={() => {
-          deleteTask(taskToDelete);
+          dispatch(deleteTask(taskToDelete));
           setModalVisible(false);
           setTaskToDelete(null);
           setSuccessMessage('Tarefa excluída com sucesso!');
@@ -148,16 +148,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
     padding: 20,
-    paddingBottom: 60,
   },
   darkContainer: {
     backgroundColor: '#333',
-  },
-  successText: {
-    fontSize: 16,
-    color: '#28a745',
-    textAlign: 'center',
-    marginBottom: 10,
   },
   title: {
     fontSize: 24,
@@ -171,6 +164,12 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 10,
     textAlign: 'center',
+  },
+  successText: {
+    fontSize: 16,
+    color: '#28a745',
+    textAlign: 'center',
+    marginBottom: 10,
   },
   filterContainer: {
     flexDirection: 'row',

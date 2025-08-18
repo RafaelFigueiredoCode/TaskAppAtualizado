@@ -1,19 +1,18 @@
-import { StyleSheet, View, Text, Alert, Switch} from 'react-native';
+import { StyleSheet, View, Text, Switch, Alert } from 'react-native';
 import { useState } from 'react';
-import axios from 'axios';
-import CustomInput from '../components/CustomInput';
-import CustomButton from '../components/CustomButton';
-import { useTasks } from '../contexts/TaskContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { addTask } from '../features/tasks/tasksSlice';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Picker } from '@react-native-picker/picker';
-import { useSelector, useDispatch } from 'react-redux';
-import { addTask } from '../features/taskSlice';
+import CustomInput from '../components/CustomInput';
+import CustomButton from '../components/CustomButton';
+import axios from 'axios';
 
 const validationSchema = Yup.object().shape({
   title: Yup.string()
+    .min(3, 'O título deve ter pelo menos 3 caracteres')
     .max(50, 'O título deve ter no máximo 50 caracteres')
-    .min(3, 'O título deve ter no mínimo 3 caractéres')
     .required('O título é obrigatório'),
   description: Yup.string().max(200, 'A descrição deve ter no máximo 200 caracteres'),
   priority: Yup.string().required('Selecione uma prioridade'),
@@ -36,13 +35,11 @@ export default function AddTaskScreen({ navigation }) {
         title: values.title,
         completed: false,
       });
-
-      dispatch (addTask({
+      dispatch(addTask({
         title: values.title,
         description: values.description,
         priority: values.priority,
       }));
-
       setSuccessMessage('Tarefa adicionada com sucesso!');
       setTimeout(() => {
         setSuccessMessage('');
@@ -55,17 +52,17 @@ export default function AddTaskScreen({ navigation }) {
     }
   };
 
+
   return (
     <View style={[styles.container, theme === 'dark' && styles.darkContainer]}>
       <Text style={[styles.title, theme === 'dark' && styles.darkText]}>Nova Tarefa</Text>
       {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
-
       <Formik
         initialValues={{ title: '', description: '', priority: 'baixa' }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ handleChange, handleSubmit, values, errors, touched }) => (
+        {({ handleChange, handleSubmit, values, errors, touched, resetForm }) => (
           <View style={styles.form}>
             <CustomInput
               value={values.title}
@@ -76,7 +73,6 @@ export default function AddTaskScreen({ navigation }) {
             {touched.title && errors.title && (
               <Text style={styles.errorText}>{errors.title}</Text>
             )}
-
             <CustomInput
               value={values.description}
               onChangeText={handleChange('description')}
@@ -86,9 +82,8 @@ export default function AddTaskScreen({ navigation }) {
             {touched.description && errors.description && (
               <Text style={styles.errorText}>{errors.description}</Text>
             )}
-
             <View style={[styles.pickerContainer, theme === 'dark' && styles.darkPickerContainer]}>
-              <Text style={[styles.label, theme === 'dark' && styles.darkText]}>Prioridade</Text>
+              <Text style={[styles.label, theme === 'dark' && styles.darkText]}>Prioridade:</Text>
               <Picker
                 selectedValue={values.priority}
                 onValueChange={handleChange('priority')}
@@ -102,30 +97,36 @@ export default function AddTaskScreen({ navigation }) {
             {touched.priority && errors.priority && (
               <Text style={styles.errorText}>{errors.priority}</Text>
             )}
-
             <View style={styles.switchContainer}>
               <Switch
                 value={acceptTerms}
                 onValueChange={setAcceptTerms}
                 trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={acceptTerms ? '#f5dd4b' : '#f4f3f4'}
+                thumbColor={acceptTerms ? '#007bff' : '#f4f3f4'}
               />
               <Text style={[styles.switchLabel, theme === 'dark' && styles.darkText]}>
                 Aceitar termos de uso
               </Text>
             </View>
-
             <CustomButton
-              title="Adicionar Tarefa"
+              title="Salvar Tarefa"
               onPress={handleSubmit}
-              color="#0B84FF"
+              color="#007bff"
               size="large"
             />
-
             <CustomButton
               title="Cancelar"
               onPress={() => navigation.goBack()}
               color="#dc3545"
+              size="large"
+            />
+            <CustomButton
+              title="Limpar Formulário"
+              onPress={() => {
+                resetForm();
+                setAcceptTerms(false);
+              }}
+              color="#6c757d"
               size="large"
             />
           </View>
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#fff',
     borderRadius: 5,
-    marginBottom: 15,
+    marginBottom: 10,
   },
   darkPickerContainer: {
     backgroundColor: '#444',
@@ -183,7 +184,6 @@ const styles = StyleSheet.create({
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
   },
   switchLabel: {
     fontSize: 16,
