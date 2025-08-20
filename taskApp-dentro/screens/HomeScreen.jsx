@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleTaskCompletion, deleteTask, loadTasks } from '../contexts/tasksSlice';
+import { toggleTaskCompletion, deleteTask, loadTasks } from '../features/taskSlice';
 import axios from 'axios';
 import TaskCard from '../components/TaskCard';
 import CustomButton from '../components/CustomButton';

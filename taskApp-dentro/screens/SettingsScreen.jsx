@@ -2,7 +2,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { increment, decrement, reset } from '../features/counterSlice';
-import { toggleTheme, clearTasks, exportTasks, restoreTasks } from '../features/tasks/tasksSlice';
+import { toggleTheme, clearTasks, exportTasks, restoreTasks, saveTasks} from '../features/taskSlice';
 import CustomButton from '../components/CustomButton';
 import CustomModal from '../components/CustomModal';
 import { useNavigation } from '@react-navigation/native';

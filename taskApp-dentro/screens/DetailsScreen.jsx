@@ -14,6 +14,9 @@ export default function DetailsScreen({ route }) {
         Descrição: {task.description || 'Nenhuma descrição'}
       </Text>
       <Text style={[styles.detail, theme === 'dark' && styles.darkText]}>
+        Localização: {task.location || 'Nenhuma localização'}
+      </Text>
+      <Text style={[styles.detail, theme === 'dark' && styles.darkText]}>
         Prioridade: {task.priority || 'Não definida'}
       </Text>
       <Text style={[styles.detail, theme === 'dark' && styles.darkText]}>

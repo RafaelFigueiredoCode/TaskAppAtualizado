@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, Switch, Alert } from 'react-native';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addTask } from '../features/tasks/tasksSlice';
+import { addTask } from '../features/taskSlice';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Picker } from '@react-native-picker/picker';
@@ -16,6 +16,7 @@ const validationSchema = Yup.object().shape({
     .required('O título é obrigatório'),
   description: Yup.string().max(200, 'A descrição deve ter no máximo 200 caracteres'),
   priority: Yup.string().required('Selecione uma prioridade'),
+  location: Yup.string().required('Dê o endereço de sua Tarefa')
 });
 
 export default function AddTaskScreen({ navigation }) {
@@ -38,6 +39,7 @@ export default function AddTaskScreen({ navigation }) {
       dispatch(addTask({
         title: values.title,
         description: values.description,
+        location: values.location,
         priority: values.priority,
       }));
       setSuccessMessage('Tarefa adicionada com sucesso!');
@@ -58,7 +60,7 @@ export default function AddTaskScreen({ navigation }) {
       <Text style={[styles.title, theme === 'dark' && styles.darkText]}>Nova Tarefa</Text>
       {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
       <Formik
-        initialValues={{ title: '', description: '', priority: 'baixa' }}
+        initialValues={{ title: '', description: '', priority: 'baixa', title: ''  }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
@@ -82,6 +84,12 @@ export default function AddTaskScreen({ navigation }) {
             {touched.description && errors.description && (
               <Text style={styles.errorText}>{errors.description}</Text>
             )}
+            <CustomInput
+              value={values.location}
+              onChangeText={handleChange('location')}
+              placeholder="Digite a localização (opcional)"
+              multiline
+            />
             <View style={[styles.pickerContainer, theme === 'dark' && styles.darkPickerContainer]}>
               <Text style={[styles.label, theme === 'dark' && styles.darkText]}>Prioridade:</Text>
               <Picker

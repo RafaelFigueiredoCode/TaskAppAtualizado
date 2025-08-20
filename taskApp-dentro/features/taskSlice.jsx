@@ -67,6 +67,7 @@ const taskSlice = createSlice({
                 title: action.payload.title,
                 description: action.payload.description || '',
                 priority: action.payload.priority || 'baixa',
+                location: action.payload.location || '',
                 completed: false
             });
         },

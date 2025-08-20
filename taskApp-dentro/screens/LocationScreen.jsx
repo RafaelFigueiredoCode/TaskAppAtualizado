@@ -1,11 +1,11 @@
 import { StyleSheet, View, Text, FlatList, ActivityIndicator, Dimensions, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import CustomButton from '../components/CustomButton';
 import { useSelector } from 'react-redux';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
-import { useTasks } from '../contexts/TaskContext';
+import CustomButton from '../components/CustomButton';
+import CustomModal from '../components/CustomModal';
 
 export default function LocationScreen() {
   const { theme } = useSelector((state) => state.tasks);
@@ -59,12 +59,37 @@ export default function LocationScreen() {
     getLocation();
   }, []);
 
+
   return (
     <View style={[styles.container, theme === 'dark' && styles.darkContainer]}>
-      {isLoading && <ActivityIndicator size="large" />}
-      {error && <Text style={styles.errorText}>{error}</Text>}
-      {address && <Text style={styles.text}>{address}</Text>}
-      {location && (
+    <Text style={[styles.title, theme === 'dark' && styles.darkText]}>
+      Sua Localização
+    </Text>
+    {isLoading ? (
+      <ActivityIndicator size="large" color="#007bff" />
+    ) : error ? (
+      <>
+        <Text style={[styles.errorText, theme === 'dark' && styles.darkText]}>
+          {error}
+        </Text>
+        <CustomButton
+          title="Tentar Novamente"
+          onPress={getLocation}
+          color="#ffc107"
+        />
+      </>
+    ) : location ? (
+      <>
+        <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
+          Latitude: {location.latitude.toFixed(6)}
+        </Text>
+        <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
+          Longitude: {location.longitude.toFixed(6)}
+        </Text>
+        <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
+          Endereço: {address || 'Carregando endereço...'}
+        </Text>
+
         <MapView
           style={styles.map}
           initialRegion={{
@@ -74,10 +99,28 @@ export default function LocationScreen() {
             longitudeDelta: 0.01,
           }}
         >
-          <Marker coordinate={location} title="Minha localização" />
+          <Marker
+            coordinate={{
+              latitude: location.latitude,
+              longitude: location.longitude,
+            }}
+            title="Você está aqui"
+            pinColor="blue"
+          />
         </MapView>
-      )}
-    </View>
+
+        <CustomButton
+          title="Atualizar Localização"
+          onPress={getLocation}
+          color="#007bff"
+        />
+      </>
+    ) : (
+      <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
+        Obtendo localização...
+      </Text>
+    )}
+  </View>
   );
 }
 

@@ -3,14 +3,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from './screens/HomeScreen';
-import AddTaskScreen from '../screens/AddTaskScreen';
-import DetailsScreen from '../screens/DetailsScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import SettingsScreen from '../screens/SettingScreen';
+import AddTaskScreen from './screens/AddTaskScreen';
+import DetailsScreen from './screens/DetailsScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import SettingsScreen from './screens/SettingsScreen';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Provider } from 'react-redux'
-import { store } from './Store'
-import LocationScreen from '../screens/LocationScreen'
+import { store } from './Store.jsx'
+import LocationScreen from './screens/LocationScreen'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
